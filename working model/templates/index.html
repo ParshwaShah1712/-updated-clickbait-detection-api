@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clickbait Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Malicious Clickbait Detector</h1>
+    <input type="text" id="headline" placeholder="Enter headline">
+    <button onclick="checkClickbait()">Check</button>
+    <p id="result"></p>
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
