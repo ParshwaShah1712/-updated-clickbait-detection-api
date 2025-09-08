@@ -10,12 +10,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
     <!-- Particles.js for animated background -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Custom particles configuration -->
+    <script src="{{ url_for('static', filename='particles-config.js') }}"></script>
 </head>
 <body>
-    <!-- Particle background container -->
-    <div id="particles-js" class="particles-container"></div>
+    <!-- Enhanced particle background container -->
+    <div id="particles-js" class="particles-container enhanced-particles"></div>
+    
+    <!-- Star background elements -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
     
     <div class="background">
+        <!-- Floating background elements -->
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
         <div class="container">
             <!-- 3D Logo -->
             <div class="logo-3d">
@@ -149,43 +171,52 @@
     <!-- Initialize particles.js -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof particlesJS !== 'undefined') {
-                particlesJS("particles-js", {
+            // Ensure the particles-js element exists before initializing
+            setTimeout(function() {
+                if (typeof particlesJS !== 'undefined' && document.getElementById('particles-js')) {
+                    particlesJS("particles-js", {
                     particles: {
-                        number: { value: 80, density: { enable: true, value_area: 800 } },
-                        color: { value: "#ffffff" },
-                        shape: { type: "circle" },
-                        opacity: { value: 0.5, random: true },
-                        size: { value: 3, random: true },
+                        number: { value: 120, density: { enable: true, value_area: 900 } },
+                        color: { value: ["#e53935", "#ff5252", "#ffcdd2", "#ffffff"] },
+                        shape: { 
+                            type: ["circle", "triangle", "polygon"],
+                            polygon: { nb_sides: 6 }
+                        },
+                        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+                        size: { value: 4, random: true, anim: { enable: true, speed: 2, size_min: 0.5, sync: false } },
                         line_linked: {
                             enable: true,
                             distance: 150,
-                            color: "#ffffff",
-                            opacity: 0.4,
-                            width: 1
+                            color: "#ff5252",
+                            opacity: 0.3,
+                            width: 1.2
                         },
                         move: {
                             enable: true,
-                            speed: 2,
+                            speed: 3,
                             direction: "none",
                             random: true,
-                            out_mode: "out"
+                            straight: false,
+                            out_mode: "bounce",
+                            bounce: true,
+                            attract: { enable: true, rotateX: 600, rotateY: 1200 }
                         }
                     },
                     interactivity: {
                         detect_on: "canvas",
                         events: {
-                            onhover: { enable: true, mode: "repulse" },
-                            onclick: { enable: true, mode: "push" }
+                            onhover: { enable: true, mode: "bubble" },
+                            onclick: { enable: true, mode: "repulse" }
                         },
                         modes: {
-                            repulse: { distance: 100, duration: 0.4 },
-                            push: { particles_nb: 4 }
+                            bubble: { distance: 200, size: 6, duration: 2, opacity: 0.8, speed: 3 },
+                            repulse: { distance: 200, duration: 0.4 }
                         }
                     },
                     retina_detect: true
                 });
-            }
+                }
+            }, 300); // Add a 300ms delay to ensure DOM is fully loaded
         });
     </script>
     

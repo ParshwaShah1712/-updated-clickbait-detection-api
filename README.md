@@ -51,3 +51,50 @@ Example API request:
 ```
 
 The API will respond with a prediction indicating whether the headline is "Malicious" or "Safe".
+
+## Chrome Extension (Manifest V3)
+
+This repo includes a `chrome_extension/` folder with a working MV3 extension that:
+
+- Extracts clickable element texts from the active page (buttons, anchors, inputs)
+- Sends them as JSON to the Flask endpoint `/predict_batch`
+- Injects a floating side panel showing labels and classifications
+
+### Files
+- `chrome_extension/manifest.json`
+- `chrome_extension/background.js`
+- `chrome_extension/content_script.js`
+- `chrome_extension/popup.html`
+- `chrome_extension/popup.js`
+- `chrome_extension/icons/` (add `icon16.png`, `icon48.png`, `icon128.png`)
+
+### Backend CORS
+
+`working model/app.py` enables CORS for localhost and MV3:
+
+```python
+from flask_cors import CORS
+CORS(app, origins=["http://127.0.0.1:5000", "http://localhost:5000", "chrome-extension://*"])
+```
+
+### Run backend
+
+```
+cd "working model"
+./venv/Scripts/python.exe app.py
+```
+
+### Load extension in Chrome
+1. Go to `chrome://extensions`
+2. Enable Developer mode
+3. Click "Load unpacked" and select `chrome_extension/`
+
+### Test workflow
+1. Ensure Flask is running at `http://127.0.0.1:5000`
+2. Visit any page with buttons
+3. Click the extension icon → "Scan Page"
+4. A floating panel appears with each label → Safe/Malicious
+
+Notes
+- Only button texts are sent to the API (no full HTML)
+- API endpoint is configurable in the popup; default is `http://127.0.0.1:5000/predict_batch`
