@@ -57,6 +57,8 @@ model = LogisticRegression(
 model.fit(X, y)
 
 
+
+
 # Persist artifacts expected by the Flask app
 with open("model.pkl", "wb") as f_model:
     pickle.dump(model, f_model)

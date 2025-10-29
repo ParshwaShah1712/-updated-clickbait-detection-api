@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify, render_template
-import pickle
-import re
-from bs4 import BeautifulSoup
-from flask_cors import CORS
+from flask import Flask, request, jsonify, render_template, send_file #(send_file for zip file download- derived)
+import pickle # for model loading
+import re # for text cleaning
+from bs4 import BeautifulSoup # for HTML parsing
+from flask_cors import CORS  # for CORS
+from pathlib import Path   # for zip file download (derived from docs/AI help)
+from io import BytesIO   # for zip file download (derived from docs/AI help)
+import zipfile  # for zip file download (derived from docs/AI help)
 
 app = Flask(__name__)
 # Allow all origins during development to support chrome-extension:// origin and preflight
@@ -93,6 +96,35 @@ def extract_and_predict():
 	preds = model.predict(vectorized)
 	results = ["Malicious" if p == 1 else "Safe" for p in preds]
 	return jsonify({"buttons": texts, "results": results})
+
+
+# NOTE: This route auto-generates a ZIP of the Chrome Extension for manual download.
+# Derived from standard Flask zip download pattern (referenced from docs/AI help).
+
+
+@app.route("/download_extension")
+def download_extension():
+    # Package the chrome_extension folder into a zip and send as attachment
+    project_root = Path(__file__).resolve().parent.parent
+    ext_dir = project_root / "chrome_extension"
+    if not ext_dir.exists():
+        return jsonify({"error": "Extension folder not found."}), 404
+
+    buffer = BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+        for path in ext_dir.rglob("*"):
+            if path.is_file():
+                # Store paths inside zip relative to chrome_extension/
+                arcname = Path("chrome_extension") / path.relative_to(ext_dir)
+                zf.write(path, arcname.as_posix())
+    buffer.seek(0)
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="clickbait_chrome_extension.zip",
+        mimetype="application/zip",
+    )
+
 
 if __name__ == "__main__":
 	app.run(debug=True)
